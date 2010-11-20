@@ -8,7 +8,7 @@
 
 
 #define GENESIZE 20
-#define POOLSIZE 100
+#define POOLSIZE 200
 #define POS_X 0
 #define POS_Y 1
 
