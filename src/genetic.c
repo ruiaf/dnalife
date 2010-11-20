@@ -3,22 +3,24 @@
 gene * gene_new(void) {
 	gene *g = (gene*) malloc(sizeof(gene));
 	memset(g,0,sizeof(gene));
+	g->mutation_rate=1000;
 	return g;
 }
 
 void gene_crossover(gene *ngene,gene *a, gene *b) {
-	int crosspoint,order;
+	int crosspoint;
 	gene *temp;
 
-	order = rand()%2;
-	if (order) {
+	if (rand()%2) {
 		temp = a;
 		a = b;
 		b = temp;
 	}
 
+	memcpy(ngene,a,sizeof(gene));
+	/*no crossover for the moment...
 	crosspoint = rand()%GENESIZE;
-	/*
+
 	//memcpy(ngene->dna,a->dna,crosspoint*sizeof(ngene->dna[0]));
 	//memcpy(ngene->dna,&(a->dna[crosspoint]),(GENESIZE-crosspoint)*sizeof(ngene->dna[0]));
 
@@ -30,24 +32,27 @@ void gene_crossover(gene *ngene,gene *a, gene *b) {
 void gene_mutation(gene *g) {
 	int i;
 
-	if (g->mutation_rate>(random()%10000)) {
-		g->mutation_rate=random()%10000;
+	/* Mutation_rate is constant for the moment*/
+	/*if (g->mutation_rate>(rand()%10000)) {
+		g->mutation_rate=rand()%10000;
+	}*/
+
+	/*
+	if (g->mutation_rate>(rand()%10000)) {
+		g->x=rand()%BOARDWIDTH;
 	}
 
-	if (g->mutation_rate>(random()%10000)) {
-		g->x=random()%BOARDHEIGHT;
+	if (g->mutation_rate>(rand()%10000)) {
+		g->y=rand()%BOARDHEIGHT;
 	}
-
-	if (g->mutation_rate>(random()%10000)) {
-		g->y=random()%BOARDWIDTH;
-	}
+	*/
 
 	for (i=0;i<GENESIZE;i++) {
-		if (g->mutation_rate>(random()%10000)) {
-			g->dna[i][POS_X]=random()%BOARDHEIGHT;
+		if (g->mutation_rate>(rand()%10000)) {
+			g->dna[i][POS_X]=rand()%BOARDWIDTH;
 		}
-		if (g->mutation_rate>(random()%10000)) {
-			g->dna[i][POS_Y]=random()%BOARDWIDTH;
+		if (g->mutation_rate>(rand()%10000)) {
+			g->dna[i][POS_Y]=rand()%BOARDHEIGHT;
 		}
 	}
 }
@@ -73,13 +78,14 @@ void gene_eval(gene *g,int ngen) {
 			life->board[g->dna[i][POS_X]][g->dna[i][POS_Y]]=1;
 	}
 
+	lifegame_run(life,ngen);
 	g->val = lifegame_eval(life);
-	/*printf("%d",g->val);
-	lifegame_run(life,ngen);*/
+
+	free(life);
 }
 
 int gene_cmp(const void *a,const void *b) {
-	return ((gene *)a)->val-((gene *)b)->val;
+	return ((gene *)b)->val-((gene *)a)->val;
 }
 
 genepool * genepool_new(void) {
@@ -88,7 +94,7 @@ genepool * genepool_new(void) {
 	memset(g,0,sizeof(genepool));
 
 	for (i=0;i<POOLSIZE;i++) {
-		g->elements[i].mutation_rate=10000;
+		g->elements[i].mutation_rate=1000;
 	}
 	return g;
 }
@@ -97,32 +103,33 @@ void genepool_reproduce(genepool * p) {
 
 	int i,j;
 	gene next_gen[POOLSIZE*POOLSIZE];
-	memset(next_gen,0,sizeof(next_gen));
+	memset(next_gen,-1,sizeof(next_gen));
 
 	for (i=0;i<POOLSIZE;i++)
 		for (j=0;j<POOLSIZE;j++) {
-			/*printf("%d %d\n",i,j);*/
 			gene_crossover(&next_gen[i*POOLSIZE+j],&p->elements[i],&p->elements[j]);
 			gene_mutation(&next_gen[i*POOLSIZE+j]);
-			gene_eval(&next_gen[i*POOLSIZE+j],1);
+			gene_eval(&next_gen[i*POOLSIZE+j],5);
 		}
 
-	qsort((void *)next_gen,POOLSIZE*POOLSIZE,sizeof(gene*),gene_cmp);
+	qsort((void *)next_gen,POOLSIZE*POOLSIZE,sizeof(gene),gene_cmp);
 	memcpy(p->elements,next_gen,sizeof(p->elements));
 }
 
 void genetic_algorithm(int ngenerations) {
-	int best_gene_eval=0;
+	int i,best_gene_eval=0;
 	genepool *pool = genepool_new();
+	gene_print(&pool->elements[0]);
 
-	while(ngenerations--) {
-		printf("%d GENERATION:\n",ngenerations);
+	for (i=0;i<ngenerations;i++) {
+		printf("GENERATION #%d:\n",i);
 		genepool_reproduce(pool);
-		puts("finished rep");
-		/*if (pool->elements[0].val>best_gene_eval) {
+		puts("FINISHED REPRODUCTION");
+		if (pool->elements[0].val>best_gene_eval) {
 			best_gene_eval = pool->elements[0].val;
-			*/gene_print(&pool->elements[0]);
-		//}
-		getchar();
+			gene_print(&pool->elements[0]);
+		}
 	}
+
+	free(pool);
 }
