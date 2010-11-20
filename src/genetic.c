@@ -17,16 +17,14 @@ void gene_crossover(gene *ngene,gene *a, gene *b) {
 		b = temp;
 	}
 
-	memcpy(ngene,a,sizeof(gene));
-	/*no crossover for the moment...
 	crosspoint = rand()%GENESIZE;
 
-	//memcpy(ngene->dna,a->dna,crosspoint*sizeof(ngene->dna[0]));
-	//memcpy(ngene->dna,&(a->dna[crosspoint]),(GENESIZE-crosspoint)*sizeof(ngene->dna[0]));
+	memcpy(ngene->dna,a->dna,crosspoint*sizeof(ngene->dna[0]));
+	memcpy(&(ngene->dna[crosspoint]),&(b->dna[crosspoint]),(GENESIZE-crosspoint)*sizeof(ngene->dna[0]));
 
-	//ngene->x=a->x;
-	//ngene->y=a->y;
-	//ngene->mutation_rate=20;*/
+	ngene->x=a->x;
+	ngene->y=a->y;
+	ngene->mutation_rate=a->mutation_rate;
 }
 
 void gene_mutation(gene *g) {
