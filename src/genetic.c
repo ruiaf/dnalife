@@ -37,20 +37,20 @@ void gene_mutation(gene *g) {
 
 	/*
 	if (g->mutation_rate>(rand()%10000)) {
-		g->x=rand()%BOARDWIDTH;
+		g->x=rand()%GADGET_WIDTH;
 	}
 
 	if (g->mutation_rate>(rand()%10000)) {
-		g->y=rand()%BOARDHEIGHT;
+		g->y=rand()%GADGET_HEIGHT;
 	}
 	*/
 
 	for (i=0;i<GENESIZE;i++) {
 		if (g->mutation_rate>(rand()%10000)) {
-			g->dna[i][POS_X]=rand()%BOARDWIDTH;
+			g->dna[i][POS_X]=rand()%GADGET_WIDTH;
 		}
 		if (g->mutation_rate>(rand()%10000)) {
-			g->dna[i][POS_Y]=rand()%BOARDHEIGHT;
+			g->dna[i][POS_Y]=rand()%GADGET_HEIGHT;
 		}
 	}
 }
@@ -72,7 +72,7 @@ void gene_eval(gene *g,int ngen) {
 	life = lifegame_new();
 
 	for (i=0;i<GENESIZE;i++) {
-		if (g->dna[i][POS_X]<BOARDWIDTH&& g->dna[i][POS_Y]<BOARDHEIGHT)
+		if (g->dna[i][POS_X]<BOARDWIDTH && g->dna[i][POS_Y]<BOARDHEIGHT)
 			life->board[g->dna[i][POS_X]][g->dna[i][POS_Y]]=1;
 	}
 
@@ -107,7 +107,7 @@ void genepool_reproduce(genepool * p) {
 		for (j=0;j<POOLSIZE;j++) {
 			gene_crossover(&next_gen[i*POOLSIZE+j],&p->elements[i],&p->elements[j]);
 			gene_mutation(&next_gen[i*POOLSIZE+j]);
-			gene_eval(&next_gen[i*POOLSIZE+j],5);
+			gene_eval(&next_gen[i*POOLSIZE+j],N_GENERATIONS);
 		}
 
 	qsort((void *)next_gen,POOLSIZE*POOLSIZE,sizeof(gene),gene_cmp);

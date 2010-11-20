@@ -9,8 +9,8 @@
 	we don't expand infinitely but just
  	within the board margins
  */
-#define BOARDWIDTH 20
-#define BOARDHEIGHT 20
+#define BOARDWIDTH 50
+#define BOARDHEIGHT 50
 
 /*	Data structure that represents the board */
 typedef struct {

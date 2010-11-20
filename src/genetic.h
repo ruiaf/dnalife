@@ -6,10 +6,13 @@
 #include <string.h>
 #include "life.h"
 
-#define GENESIZE 20
-#define POOLSIZE 200
+#define GENESIZE 8
+#define POOLSIZE 30
 #define POS_X 0
 #define POS_Y 1
+#define GADGET_HEIGHT 10
+#define GADGET_WIDTH 10
+#define N_GENERATIONS 200
 
 /*	Gene structure that represents the initial
 	object that we are trying to optimize */
