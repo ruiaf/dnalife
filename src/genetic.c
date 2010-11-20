@@ -30,10 +30,10 @@ void gene_crossover(gene *ngene,gene *a, gene *b) {
 void gene_mutation(gene *g) {
 	int i;
 
-	/* Mutation_rate is constant for the moment*/
-	/*if (g->mutation_rate>(rand()%10000)) {
+	/* the best mutation_rate is also found through the genetic algorithm*/
+	if (g->mutation_rate>(rand()%10000)) {
 		g->mutation_rate=rand()%10000;
-	}*/
+	}
 
 	/*
 	if (g->mutation_rate>(rand()%10000)) {
@@ -72,7 +72,7 @@ void gene_eval(gene *g,int ngen) {
 	life = lifegame_new();
 
 	for (i=0;i<GENESIZE;i++) {
-		if (g->dna[i][POS_X]<BOARDHEIGHT && g->dna[i][POS_Y]<BOARDWIDTH)
+		if (g->dna[i][POS_X]<BOARDWIDTH&& g->dna[i][POS_Y]<BOARDHEIGHT)
 			life->board[g->dna[i][POS_X]][g->dna[i][POS_Y]]=1;
 	}
 
